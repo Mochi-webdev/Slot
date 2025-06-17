@@ -2,19 +2,143 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Würfel Slotmaschine</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Digitale Würfelmaschine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2f;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 100vw;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .dice-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .dice {
+      width: 100px;
+      height: 100px;
+      animation: none;
+      transition: transform 0.2s;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #ff5252;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #e53935;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1.5rem;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (orientation: portrait) {
+      body::before {
+        content: "Bitte ins Querformat drehen 📱↔️";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #000;
+        color: #fff;
+        padding: 20px;
+        font-size: 1.2rem;
+        z-index: 9999;
+        text-align: center;
+      }
+
+      .container {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Würfel Slotmaschine 🎲</h1>
     <div class="dice-container">
-      <div id="dice1" class="dice">🎲</div>
-      <div id="dice2" class="dice">🎲</div>
+      <img id="dice1" class="dice" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Alea_1.png" alt="Würfel 1">
+      <img id="dice2" class="dice" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Alea_1.png" alt="Würfel 2">
     </div>
     <button onclick="rollDice()">Würfeln</button>
+    <div id="result"></div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    function rollDice() {
+      const dice1 = document.getElementById("dice1");
+      const dice2 = document.getElementById("dice2");
+      const result = document.getElementById("result");
+
+      let counter = 0;
+      const maxSpins = 10;
+
+      const spinInterval = setInterval(() => {
+        const r1 = Math.floor(Math.random() * 6) + 1;
+        const r2 = Math.floor(Math.random() * 6) + 1;
+
+        dice1.src = `https://upload.wikimedia.org/wikipedia/commons/${getDicePath(r1)}`;
+        dice2.src = `https://upload.wikimedia.org/wikipedia/commons/${getDicePath(r2)}`;
+
+        dice1.style.transform = `rotate(${Math.random() * 360}deg)`;
+        dice2.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+        counter++;
+        if (counter >= maxSpins) {
+          clearInterval(spinInterval);
+          const sum = r1 + r2;
+          result.textContent = `Ergebnis: ${r1} + ${r2} = ${sum}`;
+          dice1.style.transform = 'rotate(0deg)';
+          dice2.style.transform = 'rotate(0deg)';
+        }
+      }, 100);
+    }
+
+    function getDicePath(num) {
+      // Pfade auf Wikimedia für Alea_1.png bis Alea_6.png
+      const map = {
+        1: "2/2c/Alea_1.png",
+        2: "8/8d/Alea_2.png",
+        3: "2/2f/Alea_3.png",
+        4: "8/8d/Alea_4.png",
+        5: "5/55/Alea_5.png",
+        6: "f/f4/Alea_6.png"
+      };
+      return map[num];
+    }
+  </script>
 </body>
 </html>
