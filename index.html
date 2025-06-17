@@ -7,8 +7,8 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #1e1e2f;
+      font-family: sans-serif;
+      background: #121212;
       color: white;
       display: flex;
       justify-content: center;
@@ -32,7 +32,6 @@
     .dice {
       width: 150px;
       height: 150px;
-      transition: transform 0.2s;
     }
 
     .buttons {
@@ -48,15 +47,6 @@
       color: white;
       cursor: pointer;
       margin: 5px;
-    }
-
-    button:hover {
-      background: #e53935;
-    }
-
-    #result {
-      margin-top: 20px;
-      font-size: 1.5rem;
     }
 
     #big-sum {
@@ -103,8 +93,8 @@
 
   <div class="container">
     <div class="dice-container">
-      <img id="dice1" class="dice" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Alea_1.png" alt="Würfel 1">
-      <img id="dice2" class="dice" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Alea_1.png" alt="Würfel 2">
+      <img id="dice1" class="dice" src="https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice1.png" alt="Würfel 1">
+      <img id="dice2" class="dice" src="https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice1.png" alt="Würfel 2">
     </div>
 
     <div class="buttons" id="buttons">
@@ -112,38 +102,29 @@
     </div>
 
     <div id="big-sum">12</div>
-    <div id="result"></div>
   </div>
 
   <script>
-    const diceMap = {
-      1: "1/1b/Alea_1.png",
-      2: "8/8d/Alea_2.png",
-      3: "2/2f/Alea_3.png",
-      4: "8/8d/Alea_4.png",
-      5: "5/55/Alea_5.png",
-      6: "f/f4/Alea_6.png"
-    };
-
-    function getDicePath(num) {
-      return `https://upload.wikimedia.org/wikipedia/commons/${diceMap[num]}`;
-    }
+    const dicePaths = [
+      "https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice1.png",
+      "https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice2.png",
+      "https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice3.png",
+      "https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice4.png",
+      "https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice5.png",
+      "https://cdn.jsdelivr.net/gh/janvier123/dice-img/dice6.png"
+    ];
 
     function rollDice() {
       const dice1 = document.getElementById("dice1");
       const dice2 = document.getElementById("dice2");
-      const result = document.getElementById("result");
-      const bigSum = document.getElementById("big-sum");
       const buttons = document.getElementById("buttons");
+      const bigSum = document.getElementById("big-sum");
 
-      // Buttons ausblenden
       buttons.style.display = "none";
-      result.textContent = "";
       bigSum.style.display = "none";
 
       let counter = 0;
       const maxSpins = 10;
-
       let r1 = 1;
       let r2 = 1;
 
@@ -151,8 +132,8 @@
         r1 = Math.floor(Math.random() * 6) + 1;
         r2 = Math.floor(Math.random() * 6) + 1;
 
-        dice1.src = getDicePath(r1);
-        dice2.src = getDicePath(r2);
+        dice1.src = dicePaths[r1 - 1];
+        dice2.src = dicePaths[r2 - 1];
 
         dice1.style.transform = `rotate(${Math.random() * 360}deg)`;
         dice2.style.transform = `rotate(${Math.random() * 360}deg)`;
@@ -162,17 +143,15 @@
           clearInterval(interval);
           dice1.style.transform = 'rotate(0deg)';
           dice2.style.transform = 'rotate(0deg)';
-          const sum = r1 + r2;
 
-          result.textContent = `Ergebnis: ${r1} + ${r2} = ${sum}`;
+          const sum = r1 + r2;
           bigSum.textContent = sum;
           bigSum.style.display = "block";
+
           launchConfetti();
 
-          // Nach 2 Sekunden alles zurücksetzen
           setTimeout(() => {
             bigSum.style.display = "none";
-            result.textContent = "";
             buttons.style.display = "block";
           }, 2000);
         }
@@ -188,6 +167,7 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
+
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
