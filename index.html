@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title></title> <!-- Kein sichtbarer Titel im Browser -->
+  <title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
   <style>
     body {
@@ -35,6 +35,10 @@
       transition: transform 0.2s;
     }
 
+    .buttons {
+      margin-bottom: 10px;
+    }
+
     button {
       padding: 12px 24px;
       font-size: 18px;
@@ -53,6 +57,14 @@
     #result {
       margin-top: 20px;
       font-size: 1.5rem;
+    }
+
+    #big-sum {
+      font-size: 5rem;
+      font-weight: bold;
+      color: #00e676;
+      display: none;
+      margin-top: 20px;
     }
 
     canvas {
@@ -94,8 +106,12 @@
       <img id="dice1" class="dice" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Alea_1.png" alt="Würfel 1">
       <img id="dice2" class="dice" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Alea_1.png" alt="Würfel 2">
     </div>
-    <button onclick="rollDice()">Würfeln</button>
-    <button onclick="toggleFullscreen()">Fullscreen</button>
+
+    <div class="buttons" id="buttons">
+      <button onclick="rollDice()">Würfeln</button>
+    </div>
+
+    <div id="big-sum">12</div>
     <div id="result"></div>
   </div>
 
@@ -117,13 +133,23 @@
       const dice1 = document.getElementById("dice1");
       const dice2 = document.getElementById("dice2");
       const result = document.getElementById("result");
+      const bigSum = document.getElementById("big-sum");
+      const buttons = document.getElementById("buttons");
+
+      // Buttons ausblenden
+      buttons.style.display = "none";
+      result.textContent = "";
+      bigSum.style.display = "none";
 
       let counter = 0;
       const maxSpins = 10;
 
+      let r1 = 1;
+      let r2 = 1;
+
       const interval = setInterval(() => {
-        const r1 = Math.floor(Math.random() * 6) + 1;
-        const r2 = Math.floor(Math.random() * 6) + 1;
+        r1 = Math.floor(Math.random() * 6) + 1;
+        r2 = Math.floor(Math.random() * 6) + 1;
 
         dice1.src = getDicePath(r1);
         dice2.src = getDicePath(r2);
@@ -137,21 +163,20 @@
           dice1.style.transform = 'rotate(0deg)';
           dice2.style.transform = 'rotate(0deg)';
           const sum = r1 + r2;
+
           result.textContent = `Ergebnis: ${r1} + ${r2} = ${sum}`;
+          bigSum.textContent = sum;
+          bigSum.style.display = "block";
           launchConfetti();
+
+          // Nach 2 Sekunden alles zurücksetzen
+          setTimeout(() => {
+            bigSum.style.display = "none";
+            result.textContent = "";
+            buttons.style.display = "block";
+          }, 2000);
         }
       }, 100);
-    }
-
-    function toggleFullscreen() {
-      const docElm = document.documentElement;
-      if (!document.fullscreenElement) {
-        docElm.requestFullscreen().catch(err => {
-          alert(`Vollbildmodus konnte nicht aktiviert werden: ${err.message}`);
-        });
-      } else {
-        document.exitFullscreen();
-      }
     }
 
     // 🎉 Konfetti Effekt
